@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/user_preferences_entity.dart';
+import 'package:flutter/material.dart'; // ADD THIS
+
+// Corrected import paths
+import '../../../domain/entities/user_preferences_entity.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
@@ -22,10 +25,10 @@ class UpdatePreferences extends ProfileEvent {
 }
 
 // Update Individual Settings
-class UpdateThemeMode extends ProfileEvent {
-  final ThemeMode themeMode;
+class UpdateThemeModeEvent extends ProfileEvent {
+  final ThemeMode themeMode; // CHANGED TO FLUTTER THEMEMODE
 
-  const UpdateThemeMode({required this.themeMode});
+  const UpdateThemeModeEvent({required this.themeMode});
 
   @override
   List<Object> get props => [themeMode];
@@ -50,7 +53,7 @@ class UpdateReminderSnoozeDuration extends ProfileEvent {
 }
 
 class UpdateLanguage extends ProfileEvent {
-  final Language language;
+  final String language; // CHANGED TO STRING
 
   const UpdateLanguage({required this.language});
 

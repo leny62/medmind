@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
 import '../errors/failures.dart';
+import '../constants/app_constants.dart'; // ADD THIS IMPORT
 
 class InputConverter {
   Either<Failure, String> validateEmail(String email) {
     const emailRegex = r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+';
-    
+
     if (email.isEmpty) {
       return Left(ValidationFailure(message: 'Email is required'));
     } else if (!RegExp(emailRegex).hasMatch(email)) {
@@ -42,7 +43,7 @@ class InputConverter {
 
   Either<Failure, DateTime> validateDate(DateTime date, {String fieldName = 'Date'}) {
     final now = DateTime.now();
-    
+
     if (date.isAfter(now)) {
       return Left(ValidationFailure(message: '$fieldName cannot be in the future'));
     } else {

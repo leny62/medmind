@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart'; // ADD THIS
 import '../../../../core/errors/failures.dart';
-import '../entities/user_preferences_entity.dart';
+import '../../../../core/entities/emergency_contact_entity.dart';
+import '../entities/user_preferences_entity.dart' hide EmergencyContact;
 import '../entities/user_profile_entity.dart';
 
 abstract class ProfileRepository {
@@ -20,10 +22,10 @@ abstract class ProfileRepository {
   // User Preferences Methods
   Future<Either<Failure, UserPreferencesEntity>> getPreferences();
   Future<Either<Failure, void>> savePreferences(UserPreferencesEntity preferences);
-  Future<Either<Failure, UserPreferencesEntity>> updateThemeMode(ThemeMode themeMode);
+  Future<Either<Failure, UserPreferencesEntity>> updateThemeMode(ThemeMode themeMode); // CHANGED TO FLUTTER THEMEMODE
   Future<Either<Failure, UserPreferencesEntity>> updateNotifications(bool enabled);
   Future<Either<Failure, void>> clearAllData();
-  
+
   // Account Management
   Future<Either<Failure, void>> deleteAccount();
   Future<Either<Failure, void>> exportUserData();

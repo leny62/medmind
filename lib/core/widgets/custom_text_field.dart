@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final void Function(String)? onChanged;
-  final void Function(String)? onSubmitted;
+  final void Function(String)? onFieldSubmitted;
   final String? Function(String?)? validator;
   final TextInputAction textInputAction;
   final bool autocorrect;
@@ -25,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final String? initialValue;
   final EdgeInsetsGeometry? contentPadding;
+  final VoidCallback? onEditingComplete;
 
   const CustomTextField({
     super.key,
@@ -40,7 +41,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines = 1,
     this.maxLength,
     this.onChanged,
-    this.onSubmitted,
+    this.onFieldSubmitted,
     this.validator,
     this.textInputAction = TextInputAction.next,
     this.autocorrect = true,
@@ -50,6 +51,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.initialValue,
     this.contentPadding,
+    this.onEditingComplete,
   });
 
   @override
@@ -72,7 +74,7 @@ class CustomTextField extends StatelessWidget {
           maxLines: maxLines,
           maxLength: maxLength,
           onChanged: onChanged,
-          onFieldSubmitted: onSubmitted,
+          onFieldSubmitted: onFieldSubmitted,
           validator: validator,
           textInputAction: textInputAction,
           autocorrect: autocorrect,
@@ -81,6 +83,7 @@ class CustomTextField extends StatelessWidget {
           readOnly: readOnly,
           onTap: onTap,
           initialValue: initialValue,
+          onEditingComplete: onEditingComplete,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: prefixIcon,
@@ -110,6 +113,8 @@ class PasswordTextField extends StatefulWidget {
   final TextInputAction textInputAction;
   final FocusNode? focusNode;
   final bool enabled;
+  final void Function(String)? onFieldSubmitted;
+  final VoidCallback? onEditingComplete;
 
   const PasswordTextField({
     super.key,
@@ -121,6 +126,8 @@ class PasswordTextField extends StatefulWidget {
     this.textInputAction = TextInputAction.next,
     this.focusNode,
     this.enabled = true,
+    this.onFieldSubmitted,
+    this.onEditingComplete,
   });
 
   @override
@@ -148,6 +155,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       textInputAction: widget.textInputAction,
       focusNode: widget.focusNode,
       enabled: widget.enabled,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      onEditingComplete: widget.onEditingComplete,
       suffixIcon: IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility : Icons.visibility_off,
@@ -200,6 +209,7 @@ class MultilineTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final int maxLines;
   final int? maxLength;
+  final void Function(String)? onFieldSubmitted;
 
   const MultilineTextField({
     super.key,
@@ -211,6 +221,7 @@ class MultilineTextField extends StatelessWidget {
     this.validator,
     this.maxLines = 4,
     this.maxLength,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -225,6 +236,7 @@ class MultilineTextField extends StatelessWidget {
       maxLines: maxLines,
       maxLength: maxLength,
       keyboardType: TextInputType.multiline,
+      onFieldSubmitted: onFieldSubmitted,
     );
   }
 }

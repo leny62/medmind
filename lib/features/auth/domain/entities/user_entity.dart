@@ -32,7 +32,7 @@ class UserEntity extends Equatable {
 
   bool get isAnonymous => id.isEmpty;
 
-  static const empty = UserEntity(
+  static final empty = UserEntity(
     id: '',
     email: '',
     dateJoined: DateTime(0),

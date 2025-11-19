@@ -1,11 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/failures.dart';
-import '../../domain/entities/user_preferences_entity.dart';
-import '../../domain/usecases/get_user_preferences.dart';
-import '../../domain/usecases/save_user_preferences.dart';
-import '../../domain/usecases/update_theme_mode.dart';
-import '../../domain/usecases/update_notifications.dart';
+import 'package:flutter/material.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/usecases/usecase.dart';
+import '../../../domain/entities/user_preferences_entity.dart';
+import '../../../domain/usecases/get_user_preferences.dart';
+import '../../../domain/usecases/save_user_preferences.dart';
+import '../../../domain/usecases/update_theme_mode.dart';
+import '../../../domain/usecases/update_notifications.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
@@ -23,7 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }) : super(ProfileInitial()) {
     on<LoadPreferences>(_onLoadPreferences);
     on<UpdatePreferences>(_onUpdatePreferences);
-    on<UpdateThemeMode>(_onUpdateThemeMode);
+    on<UpdateThemeModeEvent>(_onUpdateThemeMode);
     on<UpdateNotificationsEnabled>(_onUpdateNotificationsEnabled);
     on<UpdateReminderSnoozeDuration>(_onUpdateReminderSnoozeDuration);
     on<UpdateLanguage>(_onUpdateLanguage);
@@ -36,53 +38,39 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void _onLoadPreferences(LoadPreferences event, Emitter<ProfileState> emit) async {
     emit(PreferencesLoading());
-    
-    final result = await getUserPreferences.call(NoParams());
-    
+    final result = await getUserPreferences(NoParams());
     result.fold(
-      (failure) => emit(PreferencesLoadError(message: failure.message)),
-      (preferences) => emit(PreferencesLoaded(preferences: preferences)),
+          (failure) => emit(PreferencesLoadError(message: failure.message)),
+          (preferences) => emit(PreferencesLoaded(preferences: preferences)),
     );
   }
 
   void _onUpdatePreferences(UpdatePreferences event, Emitter<ProfileState> emit) async {
     emit(PreferencesSaving());
-    
-    final result = await saveUserPreferences.call(
-      SaveUserPreferencesParams(preferences: event.preferences),
-    );
-    
+    final result = await saveUserPreferences(event.preferences);
     result.fold(
-      (failure) => emit(PreferencesSaveError(message: failure.message)),
-      (_) => emit(PreferencesUpdated(preferences: event.preferences)),
+          (failure) => emit(PreferencesSaveError(message: failure.message)),
+          (_) => emit(PreferencesUpdated(preferences: event.preferences)),
     );
   }
 
-  void _onUpdateThemeMode(UpdateThemeMode event, Emitter<ProfileState> emit) async {
-    final result = await updateThemeMode.call(
-      UpdateThemeModeParams(themeMode: event.themeMode),
-    );
-    
+  void _onUpdateThemeMode(UpdateThemeModeEvent event, Emitter<ProfileState> emit) async {
+    final result = await updateThemeMode(event.themeMode);
     result.fold(
-      (failure) => emit(PreferencesSaveError(message: failure.message)),
-      (preferences) => emit(PreferencesUpdated(preferences: preferences)),
+          (failure) => emit(PreferencesSaveError(message: failure.message)),
+          (preferences) => emit(PreferencesUpdated(preferences: preferences)),
     );
   }
 
   void _onUpdateNotificationsEnabled(UpdateNotificationsEnabled event, Emitter<ProfileState> emit) async {
-    final result = await updateNotifications.call(
-      UpdateNotificationsParams(notificationsEnabled: event.enabled),
-    );
-    
+    final result = await updateNotifications(event.enabled as UpdateNotificationsParams);
     result.fold(
-      (failure) => emit(PreferencesSaveError(message: failure.message)),
-      (preferences) => emit(PreferencesUpdated(preferences: preferences)),
+          (failure) => emit(PreferencesSaveError(message: failure.message)),
+          (preferences) => emit(PreferencesUpdated(preferences: preferences)),
     );
   }
 
   void _onUpdateReminderSnoozeDuration(UpdateReminderSnoozeDuration event, Emitter<ProfileState> emit) async {
-    // Implementation will be added when use case is created
-    // For now, just emit current state
     if (state is PreferencesLoaded) {
       final currentState = state as PreferencesLoaded;
       final updatedPreferences = currentState.preferences.copyWith(
@@ -96,7 +84,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (state is PreferencesLoaded) {
       final currentState = state as PreferencesLoaded;
       final updatedPreferences = currentState.preferences.copyWith(
-        language: event.language,
+        language: event.language, // NOW STRING
       );
       add(UpdatePreferences(preferences: updatedPreferences));
     }
@@ -124,29 +112,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void _onResetToDefaults(ResetToDefaults event, Emitter<ProfileState> emit) async {
     emit(PreferencesSaving());
-    
     final defaultPreferences = UserPreferencesEntity.defaultPreferences;
-    final result = await saveUserPreferences.call(
-      SaveUserPreferencesParams(preferences: defaultPreferences),
-    );
-    
+    final result = await saveUserPreferences(defaultPreferences);
     result.fold(
-      (failure) => emit(PreferencesSaveError(message: failure.message)),
-      (_) => emit(PreferencesReset(preferences: defaultPreferences)),
+          (failure) => emit(PreferencesSaveError(message: failure.message)),
+          (_) => emit(PreferencesReset(preferences: defaultPreferences)),
     );
   }
 
   void _onExportUserData(ExportUserData event, Emitter<ProfileState> emit) async {
     emit(DataExporting());
-    
-    // Simulate data export process
     await Future.delayed(const Duration(seconds: 2));
-    
-    // In a real app, this would return the actual file path
     const filePath = '/storage/emulated/0/Download/medmind_backup.json';
     emit(DataExported(filePath: filePath));
-    
-    // Return to loaded state after export
     if (state is PreferencesLoaded) {
       final currentState = state as PreferencesLoaded;
       emit(PreferencesLoaded(preferences: currentState.preferences));
@@ -155,13 +133,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   void _onClearAllData(ClearAllData event, Emitter<ProfileState> emit) async {
     emit(DataClearing());
-    
-    // Simulate data clearing process
     await Future.delayed(const Duration(seconds: 1));
-    
     emit(DataCleared());
-    
-    // Return to default preferences after clearing
     final defaultPreferences = UserPreferencesEntity.defaultPreferences;
     emit(PreferencesReset(preferences: defaultPreferences));
   }

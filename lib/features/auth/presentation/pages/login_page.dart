@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
-import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_button.dart' as custom_buttons;
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/error_widget.dart';
@@ -34,11 +34,11 @@ class _LoginPageState extends State<LoginPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-            SignInRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-            ),
-          );
+        SignInRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                     // Logo and Title
                     _buildHeader(),
                     const SizedBox(height: 48),
-                    
+
                     // Email Field
                     CustomTextField(
                       label: 'Email',
@@ -92,12 +92,12 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) {
+                      onEditingComplete: () {
                         _passwordFocusNode.requestFocus();
                       },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Password Field
                     PasswordTextField(
                       label: 'Password',
@@ -113,10 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) => _submitForm(),
+                      onEditingComplete: _submitForm,
                     ),
                     const SizedBox(height: 8),
-                    
+
                     // Forgot Password
                     Align(
                       alignment: Alignment.centerRight,
@@ -131,26 +131,24 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Sign In Button
-                    CustomButton(
+                    custom_buttons.PrimaryButton(
                       text: 'Sign In',
                       onPressed: _submitForm,
-                      variant: ButtonVariant.primary,
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Google Sign In
-                    CustomButton(
+                    custom_buttons.CustomOutlinedButton(
                       text: 'Continue with Google',
                       onPressed: () {
                         context.read<AuthBloc>().add(GoogleSignInRequested());
                       },
-                      variant: ButtonVariant.outlined,
                       icon: Icons.g_mobiledata,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Sign Up Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -172,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    
+
                     // Error Display
                     if (state is SignInError) ...[
                       const SizedBox(height: 16),

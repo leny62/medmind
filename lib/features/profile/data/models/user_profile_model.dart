@@ -109,7 +109,7 @@ class UserProfileModel extends Equatable {
     );
   }
 
-  static const empty = UserProfileModel(
+  static final empty = UserProfileModel(
     id: '',
     email: '',
     displayName: '',

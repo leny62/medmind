@@ -1,22 +1,19 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart'; // ADD THIS
 import '../../../../core/errors/failures.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../entities/user_preferences_entity.dart';
 import '../repositories/profile_repository.dart';
 
-class UpdateThemeMode implements UseCase<UserPreferencesEntity, UpdateThemeModeParams> {
+class UpdateThemeMode {
   final ProfileRepository repository;
 
   UpdateThemeMode(this.repository);
 
-  @override
-  Future<Either<Failure, UserPreferencesEntity>> call(UpdateThemeModeParams params) async {
-    return await repository.updateThemeMode(params.themeMode);
+  Future<Either<Failure, UserPreferencesEntity>> call(ThemeMode themeMode) async { // CHANGED PARAMETER TYPE
+    try {
+      return await repository.updateThemeMode(themeMode);
+    } catch (e) {
+      return Left(CacheFailure(message: 'Failed to update theme mode: $e'));
+    }
   }
-}
-
-class UpdateThemeModeParams {
-  final ThemeMode themeMode;
-
-  UpdateThemeModeParams({required this.themeMode});
 }

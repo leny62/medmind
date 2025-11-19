@@ -1,13 +1,11 @@
 import 'package:equatable/equatable.dart';
-
-enum ThemeMode { light, dark, system }
-enum Language { english, spanish, french }
+import 'package:flutter/material.dart';
 
 class UserPreferencesEntity extends Equatable {
   final ThemeMode themeMode;
   final bool notificationsEnabled;
-  final int reminderSnoozeDuration; // in minutes
-  final Language language;
+  final int reminderSnoozeDuration;
+  final String language; // CHANGED FROM ENUM TO STRING
   final bool biometricAuthEnabled;
   final bool dataBackupEnabled;
   final DateTime? lastBackup;
@@ -16,7 +14,7 @@ class UserPreferencesEntity extends Equatable {
     this.themeMode = ThemeMode.system,
     this.notificationsEnabled = true,
     this.reminderSnoozeDuration = 5,
-    this.language = Language.english,
+    this.language = 'english', // CHANGED FROM ENUM TO STRING
     this.biometricAuthEnabled = false,
     this.dataBackupEnabled = true,
     this.lastBackup,
@@ -37,7 +35,7 @@ class UserPreferencesEntity extends Equatable {
     ThemeMode? themeMode,
     bool? notificationsEnabled,
     int? reminderSnoozeDuration,
-    Language? language,
+    String? language, // CHANGED FROM ENUM TO STRING
     bool? biometricAuthEnabled,
     bool? dataBackupEnabled,
     DateTime? lastBackup,

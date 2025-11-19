@@ -35,34 +35,34 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEnabled = !isDisabled && !isLoading;
-    
+
     Widget buttonChild = isLoading
         ? SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: _getTextColor(context),
-            ),
-          )
+      height: 20,
+      width: 20,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        color: _getTextColor(context),
+      ),
+    )
         : Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                Icon(
-                  icon,
-                  size: 20,
-                  color: _getTextColor(context),
-                ),
-                const SizedBox(width: 8),
-              ],
-              Text(
-                text,
-                style: _getTextStyle(context),
-              ),
-            ],
-          );
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            size: 20,
+            color: _getTextColor(context),
+          ),
+          const SizedBox(width: 8),
+        ],
+        Text(
+          text,
+          style: _getTextStyle(context),
+        ),
+      ],
+    );
 
     final buttonStyle = _getButtonStyle(context);
 
@@ -71,21 +71,21 @@ class CustomButton extends StatelessWidget {
       height: height,
       child: variant == ButtonVariant.outlined
           ? OutlinedButton(
-              onPressed: isEnabled ? onPressed : null,
-              style: buttonStyle,
-              child: buttonChild,
-            )
+        onPressed: isEnabled ? onPressed : null,
+        style: buttonStyle,
+        child: buttonChild,
+      )
           : variant == ButtonVariant.text
-            ? TextButton(
-                onPressed: isEnabled ? onPressed : null,
-                style: buttonStyle,
-                child: buttonChild,
-              )
-            : ElevatedButton(
-                onPressed: isEnabled ? onPressed : null,
-                style: buttonStyle,
-                child: buttonChild,
-              ),
+          ? TextButton(
+        onPressed: isEnabled ? onPressed : null,
+        style: buttonStyle,
+        child: buttonChild,
+      )
+          : ElevatedButton(
+        onPressed: isEnabled ? onPressed : null,
+        style: buttonStyle,
+        child: buttonChild,
+      ),
     );
   }
 
@@ -115,7 +115,7 @@ class CustomButton extends StatelessWidget {
 
   Color _getBackgroundColor(BuildContext context) {
     if (customColor != null) return customColor!;
-    
+
     if (!isDisabled && !isLoading) {
       switch (variant) {
         case ButtonVariant.primary:
@@ -136,7 +136,7 @@ class CustomButton extends StatelessWidget {
     if (customColor != null && variant == ButtonVariant.primary) {
       return Colors.white;
     }
-    
+
     if (!isDisabled && !isLoading) {
       switch (variant) {
         case ButtonVariant.primary:
@@ -156,13 +156,13 @@ class CustomButton extends StatelessWidget {
 
   TextStyle _getTextStyle(BuildContext context) {
     final baseStyle = TextStyles.buttonMedium;
-    
+
     if (!isDisabled && !isLoading) {
       return baseStyle.copyWith(
         color: _getTextColor(context),
       );
     }
-    
+
     return baseStyle.copyWith(
       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.38),
     );
@@ -264,7 +264,8 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
-class OutlinedButton extends StatelessWidget {
+// Renamed to avoid conflict with Flutter's OutlinedButton
+class CustomOutlinedButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final bool isLoading;
@@ -273,7 +274,7 @@ class OutlinedButton extends StatelessWidget {
   final double? width;
   final bool fullWidth;
 
-  const OutlinedButton({
+  const CustomOutlinedButton({
     super.key,
     required this.text,
     required this.onPressed,

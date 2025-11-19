@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
-import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_button.dart' as custom_buttons; // ADDED ALIAS
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/loading_widget.dart';
 
@@ -29,10 +29,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-            PasswordResetRequested(
-              email: _emailController.text.trim(),
-            ),
-          );
+        PasswordResetRequested(
+          email: _emailController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -70,7 +70,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     // Header
                     _buildHeader(),
                     const SizedBox(height: 32),
-                    
+
                     // Instructions
                     Text(
                       'Enter your email address and we will send you a link to reset your password.',
@@ -80,7 +80,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // Email Field
                     CustomTextField(
                       label: 'Email',
@@ -98,23 +98,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) => _submitForm(),
+                      onFieldSubmitted: (_) => _submitForm(), // FIXED: onSubmitted → onFieldSubmitted
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // Send Reset Link Button
-                    CustomButton(
+                    custom_buttons.CustomButton( // FIXED: Added alias
                       text: 'Send Reset Link',
                       onPressed: _submitForm,
-                      variant: ButtonVariant.primary,
+                      variant: custom_buttons.ButtonVariant.primary, // FIXED: Added alias
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Back to Login
-                    CustomButton(
+                    custom_buttons.CustomButton( // FIXED: Added alias
                       text: 'Back to Login',
                       onPressed: _navigateToLogin,
-                      variant: ButtonVariant.text,
+                      variant: custom_buttons.ButtonVariant.text, // FIXED: Added alias
                     ),
                   ],
                 ),
@@ -161,7 +161,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         title: const Text('Check Your Email'),
         content: Text(
           'We have sent a password reset link to ${_emailController.text}. '
-          'Please check your email and follow the instructions to reset your password.',
+              'Please check your email and follow the instructions to reset your password.',
         ),
         actions: [
           TextButton(

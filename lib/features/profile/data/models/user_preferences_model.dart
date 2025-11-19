@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart'; // ADD THIS
 
-enum ThemeMode { light, dark, system }
+// Remove ThemeMode enum since we're using Flutter's
 enum Language { english, spanish, french }
 enum TemperatureUnit { celsius, fahrenheit }
 enum DistanceUnit { metric, imperial }
 
 class UserPreferencesModel extends Equatable {
-  final ThemeMode themeMode;
+  final ThemeMode themeMode; // CHANGED TO FLUTTER THEMEMODE
   final bool notificationsEnabled;
   final bool medicationRemindersEnabled;
   final bool refillRemindersEnabled;
@@ -23,7 +24,7 @@ class UserPreferencesModel extends Equatable {
   final Map<String, dynamic>? customSettings;
 
   const UserPreferencesModel({
-    this.themeMode = ThemeMode.system,
+    this.themeMode = ThemeMode.system, // CHANGED TO FLUTTER THEMEMODE
     this.notificationsEnabled = true,
     this.medicationRemindersEnabled = true,
     this.refillRemindersEnabled = true,
@@ -42,7 +43,7 @@ class UserPreferencesModel extends Equatable {
 
   factory UserPreferencesModel.fromJson(Map<String, dynamic> json) {
     return UserPreferencesModel(
-      themeMode: _parseThemeMode(json['themeMode']),
+      themeMode: _parseThemeMode(json['themeMode']), // UPDATED
       notificationsEnabled: json['notificationsEnabled'] as bool? ?? true,
       medicationRemindersEnabled: json['medicationRemindersEnabled'] as bool? ?? true,
       refillRemindersEnabled: json['refillRemindersEnabled'] as bool? ?? true,
@@ -54,7 +55,7 @@ class UserPreferencesModel extends Equatable {
       biometricAuthEnabled: json['biometricAuthEnabled'] as bool? ?? false,
       dataBackupEnabled: json['dataBackupEnabled'] as bool? ?? true,
       analyticsEnabled: json['analyticsEnabled'] as bool? ?? true,
-      lastBackup: json['lastBackup'] != null 
+      lastBackup: json['lastBackup'] != null
           ? DateTime.parse(json['lastBackup'] as String)
           : null,
       lastSync: json['lastSync'] != null
@@ -68,7 +69,7 @@ class UserPreferencesModel extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'themeMode': themeMode.name,
+      'themeMode': _themeModeToString(themeMode), // UPDATED
       'notificationsEnabled': notificationsEnabled,
       'medicationRemindersEnabled': medicationRemindersEnabled,
       'refillRemindersEnabled': refillRemindersEnabled,
@@ -87,7 +88,7 @@ class UserPreferencesModel extends Equatable {
   }
 
   UserPreferencesModel copyWith({
-    ThemeMode? themeMode,
+    ThemeMode? themeMode, // CHANGED TO FLUTTER THEMEMODE
     bool? notificationsEnabled,
     bool? medicationRemindersEnabled,
     bool? refillRemindersEnabled,
@@ -135,6 +136,18 @@ class UserPreferencesModel extends Equatable {
     }
   }
 
+  static String _themeModeToString(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.light:
+        return 'light';
+      case ThemeMode.dark:
+        return 'dark';
+      case ThemeMode.system:
+      default:
+        return 'system';
+    }
+  }
+
   static Language _parseLanguage(String? language) {
     switch (language) {
       case 'spanish':
@@ -171,7 +184,7 @@ class UserPreferencesModel extends Equatable {
   bool get isDarkMode => themeMode == ThemeMode.dark;
   bool get isLightMode => themeMode == ThemeMode.light;
   bool get isSystemTheme => themeMode == ThemeMode.system;
-  
+
   String get languageCode {
     switch (language) {
       case Language.spanish:
@@ -266,9 +279,9 @@ extension UserPreferencesModelExtensions on UserPreferencesModel {
   // Get modified fields compared to another preferences model
   Map<String, dynamic> getModifiedFields(UserPreferencesModel other) {
     final modifiedFields = <String, dynamic>{};
-    
+
     if (themeMode != other.themeMode) {
-      modifiedFields['themeMode'] = themeMode;
+      modifiedFields['themeMode'] = UserPreferencesModel._themeModeToString(themeMode);
     }
     if (notificationsEnabled != other.notificationsEnabled) {
       modifiedFields['notificationsEnabled'] = notificationsEnabled;
@@ -286,13 +299,13 @@ extension UserPreferencesModelExtensions on UserPreferencesModel {
       modifiedFields['reminderAdvanceTime'] = reminderAdvanceTime;
     }
     if (language != other.language) {
-      modifiedFields['language'] = language;
+      modifiedFields['language'] = language.name;
     }
     if (temperatureUnit != other.temperatureUnit) {
-      modifiedFields['temperatureUnit'] = temperatureUnit;
+      modifiedFields['temperatureUnit'] = temperatureUnit.name;
     }
     if (distanceUnit != other.distanceUnit) {
-      modifiedFields['distanceUnit'] = distanceUnit;
+      modifiedFields['distanceUnit'] = distanceUnit.name;
     }
     if (biometricAuthEnabled != other.biometricAuthEnabled) {
       modifiedFields['biometricAuthEnabled'] = biometricAuthEnabled;
@@ -303,7 +316,7 @@ extension UserPreferencesModelExtensions on UserPreferencesModel {
     if (analyticsEnabled != other.analyticsEnabled) {
       modifiedFields['analyticsEnabled'] = analyticsEnabled;
     }
-    
+
     return modifiedFields;
   }
 }

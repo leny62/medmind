@@ -21,7 +21,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
       if (jsonString == null) {
         return UserPreferencesModel.defaultPreferences;
       }
-      
+
       final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
       return UserPreferencesModel.fromJson(jsonMap);
     } catch (e) {
@@ -47,30 +47,5 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
     } catch (e) {
       throw Exception('Failed to clear preferences: $e');
     }
-  }
-
-  // Additional utility methods
-  Future<void> saveThemeMode(ThemeMode themeMode) async {
-    final currentPreferences = await getPreferences();
-    final updatedPreferences = currentPreferences.copyWith(themeMode: themeMode);
-    await savePreferences(updatedPreferences);
-  }
-
-  Future<void> saveNotificationsEnabled(bool enabled) async {
-    final currentPreferences = await getPreferences();
-    final updatedPreferences = currentPreferences.copyWith(notificationsEnabled: enabled);
-    await savePreferences(updatedPreferences);
-  }
-
-  Future<void> saveLanguage(Language language) async {
-    final currentPreferences = await getPreferences();
-    final updatedPreferences = currentPreferences.copyWith(language: language);
-    await savePreferences(updatedPreferences);
-  }
-
-  Future<void> saveBiometricAuthEnabled(bool enabled) async {
-    final currentPreferences = await getPreferences();
-    final updatedPreferences = currentPreferences.copyWith(biometricAuthEnabled: enabled);
-    await savePreferences(updatedPreferences);
   }
 }

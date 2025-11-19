@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/auth_bloc.dart';
 import '../blocs/auth_event.dart';
 import '../blocs/auth_state.dart';
-import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_button.dart' as custom_buttons;
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/error_widget.dart';
@@ -42,12 +42,12 @@ class _RegisterPageState extends State<RegisterPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(
-            SignUpRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text.trim(),
-              displayName: _displayNameController.text.trim(),
-            ),
-          );
+        SignUpRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          displayName: _displayNameController.text.trim(),
+        ),
+      );
     }
   }
 
@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     // Header
                     _buildHeader(),
                     const SizedBox(height: 32),
-                    
+
                     // Display Name Field
                     CustomTextField(
                       label: 'Full Name',
@@ -108,12 +108,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) {
+                      onEditingComplete: () {
                         _emailFocusNode.requestFocus();
-                      },
+                      }, onFieldSubmitted: (_) {  },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Email Field
                     CustomTextField(
                       label: 'Email',
@@ -131,12 +131,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) {
+                      onEditingComplete: () {
                         _passwordFocusNode.requestFocus();
                       },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Password Field
                     PasswordTextField(
                       label: 'Password',
@@ -152,12 +152,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                         return null;
                       },
-                      onSubmitted: (_) {
+                      onEditingComplete: () {
                         _confirmPasswordFocusNode.requestFocus();
                       },
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Confirm Password Field
                     PasswordTextField(
                       label: 'Confirm Password',
@@ -165,33 +165,31 @@ class _RegisterPageState extends State<RegisterPage> {
                       focusNode: _confirmPasswordFocusNode,
                       textInputAction: TextInputAction.done,
                       validator: _validateConfirmPassword,
-                      onSubmitted: (_) => _submitForm(),
+                      onEditingComplete: _submitForm, onFieldSubmitted: (_) {  },
                     ),
                     const SizedBox(height: 32),
-                    
+
                     // Terms and Conditions
                     _buildTermsAgreement(),
                     const SizedBox(height: 24),
-                    
+
                     // Create Account Button
-                    CustomButton(
+                    custom_buttons.PrimaryButton(
                       text: 'Create Account',
                       onPressed: _submitForm,
-                      variant: ButtonVariant.primary,
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Google Sign Up
-                    CustomButton(
+                    custom_buttons.CustomOutlinedButton(
                       text: 'Sign up with Google',
                       onPressed: () {
                         context.read<AuthBloc>().add(GoogleSignInRequested());
                       },
-                      variant: ButtonVariant.outlined,
                       icon: Icons.g_mobiledata,
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Sign In Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -213,7 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
-                    
+
                     // Error Display
                     if (state is SignUpError) ...[
                       const SizedBox(height: 16),
