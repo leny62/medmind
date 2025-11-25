@@ -1,89 +1,220 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  @override
-  Stream<UserEntity> get user => const Stream.empty();
+  final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
+  final SharedPreferences _sharedPreferences;
+
+  AuthRepositoryImpl({
+    required FirebaseAuth firebaseAuth,
+    required FirebaseFirestore firestore,
+    required SharedPreferences sharedPreferences,
+  })  : _firebaseAuth = firebaseAuth,
+        _firestore = firestore,
+        _sharedPreferences = sharedPreferences;
 
   @override
-  UserEntity get currentUser => UserEntity.empty;
+  Stream<UserEntity> get user {
+    return _firebaseAuth.authStateChanges().map((firebaseUser) {
+      if (firebaseUser != null) {
+        return UserEntity(
+          id: firebaseUser.uid,
+          email: firebaseUser.email ?? '',
+          displayName: firebaseUser.displayName ?? '',
+          dateJoined: firebaseUser.metadata.creationTime ?? DateTime.now(),
+          emailVerified: firebaseUser.emailVerified,
+        );
+      } else {
+        return UserEntity.empty;
+      }
+    });
+  }
+
+  @override
+  UserEntity get currentUser {
+    final firebaseUser = _firebaseAuth.currentUser;
+    if (firebaseUser != null) {
+      return UserEntity(
+        id: firebaseUser.uid,
+        email: firebaseUser.email ?? '',
+        displayName: firebaseUser.displayName ?? '',
+        dateJoined: firebaseUser.metadata.creationTime ?? DateTime.now(),
+        emailVerified: firebaseUser.emailVerified,
+      );
+    } else {
+      return UserEntity.empty;
+    }
+  }
 
   @override
   Future<Either<Failure, UserEntity>> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    // Temporary implementation for testing
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (email == 'test@medmind.com' && password == 'password') {
-      return Right(UserEntity(
-        id: 'test-user-123',
+    try {
+      final credential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
-        displayName: 'Test User',
-        dateJoined: DateTime.now(),
-        emailVerified: true,
-      ));
-    } else {
-      return const Left(InvalidCredentialsFailure());
+        password: password,
+      );
+
+      if (credential.user != null) {
+        final user = UserEntity(
+          id: credential.user!.uid,
+          email: credential.user!.email ?? '',
+          displayName: credential.user!.displayName ?? '',
+          dateJoined: credential.user!.metadata.creationTime ?? DateTime.now(),
+          emailVerified: credential.user!.emailVerified,
+        );
+
+        // Save user data to Firestore
+        await _saveUserToFirestore(user);
+
+        return Right(user);
+      } else {
+        return const Left(AuthenticationFailure(message: 'Sign in failed'));
+      }
+    } on FirebaseAuthException catch (e) {
+      return Left(_mapFirebaseAuthException(e));
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, UserEntity>> signUpWithEmailAndPassword({
+  Future<Either<Failure, UserEntity>> signUp({
     required String email,
     required String password,
     required String displayName,
   }) async {
-    // Temporary implementation for testing
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    return Right(UserEntity(
-      id: 'new-user-${DateTime.now().millisecondsSinceEpoch}',
-      email: email,
-      displayName: displayName,
-      dateJoined: DateTime.now(),
-      emailVerified: false,
-    ));
-  }
+      if (credential.user != null) {
+        // Update display name
+        await credential.user!.updateDisplayName(displayName);
 
-  @override
-  Future<Either<Failure, UserEntity>> signInWithGoogle() async {
-    // Temporary implementation for testing
-    await Future.delayed(const Duration(seconds: 2));
+        final user = UserEntity(
+          id: credential.user!.uid,
+          email: credential.user!.email ?? '',
+          displayName: displayName,
+          dateJoined: credential.user!.metadata.creationTime ?? DateTime.now(),
+          emailVerified: credential.user!.emailVerified,
+        );
 
-    return Right(UserEntity(
-      id: 'google-user-123',
-      email: 'google@medmind.com',
-      displayName: 'Google User',
-      dateJoined: DateTime.now(),
-      emailVerified: true,
-    ));
+        // Save user data to Firestore
+        await _saveUserToFirestore(user);
+
+        // Send email verification
+        await credential.user!.sendEmailVerification();
+
+        return Right(user);
+      } else {
+        return const Left(AuthenticationFailure(message: 'Sign up failed'));
+      }
+    } on FirebaseAuthException catch (e) {
+      return Left(_mapFirebaseAuthException(e));
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
   }
 
   @override
   Future<Either<Failure, void>> signOut() async {
-    return const Right(null);
+    try {
+      await _firebaseAuth.signOut();
+      return const Right(null);
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
   }
 
   @override
-  Future<Either<Failure, void>> sendPasswordResetEmail(String email) async {
-    await Future.delayed(const Duration(seconds: 2));
-    return const Right(null);
+  Future<Either<Failure, void>> resetPassword({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return const Right(null);
+    } on FirebaseAuthException catch (e) {
+      return Left(_mapFirebaseAuthException(e));
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> signInWithGoogle() async {
+    try {
+      // Note: Google Sign-In implementation would require google_sign_in package
+      // and proper configuration. For now, return an error.
+      return const Left(AuthenticationFailure(
+        message: 'Google Sign-In not implemented yet. Please use email/password.',
+      ));
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
   }
 
   @override
   Future<Either<Failure, void>> sendEmailVerification() async {
-    return const Right(null);
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        await user.sendEmailVerification();
+        return const Right(null);
+      } else {
+        return const Left(AuthenticationFailure(message: 'No user logged in'));
+      }
+    } catch (e) {
+      return Left(AuthenticationFailure(message: e.toString()));
+    }
   }
 
-  @override
-  bool get isSignedIn => false;
+  /// Save user data to Firestore
+  Future<void> _saveUserToFirestore(UserEntity user) async {
+    try {
+      await _firestore.collection('users').doc(user.id).set({
+        'email': user.email,
+        'displayName': user.displayName,
+        'dateJoined': Timestamp.fromDate(user.dateJoined),
+        'emailVerified': user.emailVerified,
+        'updatedAt': Timestamp.now(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      // Log error but don't fail the authentication
+      print('Failed to save user to Firestore: $e');
+    }
+  }
 
-  @override
-  Future<Either<Failure, void>> reloadUser() async {
-    return const Right(null);
+  /// Map Firebase Auth exceptions to custom failures
+  Failure _mapFirebaseAuthException(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return const AuthenticationFailure(message: 'No user found with this email.');
+      case 'wrong-password':
+        return const AuthenticationFailure(message: 'Wrong password provided.');
+      case 'email-already-in-use':
+        return const AuthenticationFailure(message: 'An account already exists with this email.');
+      case 'weak-password':
+        return const ValidationFailure(message: 'The password provided is too weak.');
+      case 'invalid-email':
+        return const ValidationFailure(message: 'The email address is not valid.');
+      case 'user-disabled':
+        return const AuthenticationFailure(message: 'This user account has been disabled.');
+      case 'too-many-requests':
+        return const AuthenticationFailure(message: 'Too many requests. Try again later.');
+      case 'network-request-failed':
+        return const NetworkFailure(message: 'Network error. Please check your connection.');
+      default:
+        return AuthenticationFailure(message: e.message ?? 'Authentication failed.');
+    }
   }
 }

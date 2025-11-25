@@ -127,15 +127,15 @@ class MedicationRepositoryImpl implements MedicationRepository {
   @override
   Future<Either<Failure, String>> scanBarcode() async {
     try {
-      // This is a placeholder implementation
-      // In a real app, this would integrate with a barcode scanning library
-      // and potentially lookup medication information from a database
-
-      // For now, return a mock barcode result
-      await Future.delayed(
-        const Duration(seconds: 1),
-      ); // Simulate scanning time
-      return const Right('1234567890123'); // Mock barcode data
+      // Note: This method should be called from the presentation layer
+      // where the actual barcode scanning UI is implemented using mobile_scanner
+      // The presentation layer will handle camera permissions and UI
+      // This repository method is primarily for validation and error handling
+      
+      // For now, return an error indicating this should be handled at the UI level
+      return Left(ValidationFailure(
+        message: 'Barcode scanning should be initiated from the presentation layer with proper camera permissions and UI',
+      ));
     } on AppException catch (e) {
       return Left(_mapExceptionToFailure(e));
     } catch (e) {

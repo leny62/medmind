@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../features/auth/presentation/pages/auth_test_page.dart';
-import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../../injection_container.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -18,7 +15,6 @@ class _MainLayoutState extends State<MainLayout> {
     MedicationListPageSimple(),
     AdherenceHistoryPageSimple(),
     ProfilePageSimple(),
-    AuthTestPage(),
   ];
 
   @override
