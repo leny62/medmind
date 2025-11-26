@@ -317,7 +317,7 @@
 - [x] 14. Checkpoint - Ensure all frontend tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 15. Verify error handling across the application
+- [x] 15. Verify error handling across the application
   - Test network error messaging
   - Test validation error display
   - Test server error handling
@@ -325,16 +325,16 @@
   - Test graceful handling of unexpected errors
   - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 15.1 Write property test for network error messages
+- [x] 15.1 Write property test for network error messages
   - **Property 36: Network errors display connectivity messages**
   - **Validates: Requirements 11.1**
 
-- [ ] 15.2 Write unit tests for error handling
+- [x] 15.2 Write unit tests for error handling
   - Test all error types are properly handled
   - Test error logging functionality
   - _Requirements: 11.3, 11.5_
 
-- [ ] 16. Verify notification system
+- [x] 16. Verify notification system
   - Test notification scheduling at correct times
   - Test notification content (name, dosage, buttons)
   - Test notification tap navigation
@@ -342,38 +342,38 @@
   - Test permission denial handling
   - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
-- [ ] 16.1 Write property test for notification scheduling
+- [x] 16.1 Write property test for notification scheduling
   - **Property 45: Reminders schedule at correct times**
   - **Validates: Requirements 15.1**
 
-- [ ] 16.2 Write property test for notification content
+- [x] 16.2 Write property test for notification content
   - **Property 46: Notifications contain required information**
   - **Validates: Requirements 15.2**
 
-- [ ] 16.3 Write property test for snooze rescheduling
+- [x] 16.3 Write property test for snooze rescheduling
   - **Property 47: Snooze reschedules notifications**
   - **Validates: Requirements 15.4**
 
-- [ ] 17. Verify real-time synchronization
+- [x] 17. Verify real-time synchronization
   - Test Firestore data streaming to listeners
   - Test dashboard real-time statistics updates
   - Test medication list automatic updates
   - Test offline sync when connectivity restored
   - _Requirements: 17.1, 17.2, 17.4, 17.5_
 
-- [ ] 17.1 Write property test for data streaming
+- [x] 17.1 Write property test for data streaming
   - **Property 48: Data changes stream to listeners**
   - **Validates: Requirements 17.1**
 
-- [ ] 17.2 Write property test for dashboard real-time updates
+- [x] 17.2 Write property test for dashboard real-time updates
   - **Property 49: Adherence logs update dashboard in real-time**
   - **Validates: Requirements 17.2**
 
-- [ ] 17.3 Write property test for list auto-updates
+- [x] 17.3 Write property test for list auto-updates
   - **Property 50: List screens update automatically**
   - **Validates: Requirements 17.5**
 
-- [ ] 18. Verify offline functionality
+- [x] 18. Verify offline functionality
   - Test cached data accessibility offline
   - Test offline operation queuing
   - Test offline indicator display
