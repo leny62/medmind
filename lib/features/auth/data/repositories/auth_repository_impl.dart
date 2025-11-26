@@ -160,38 +160,61 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> signInWithGoogle() async {
     try {
+      print('🔐 [Auth] Starting Google Sign-In flow...');
+      
       GoogleSignInAccount? googleUser;
       try {
         googleUser = await _googleSignIn.signIn();
+        print('🔐 [Auth] Google Sign-In popup completed');
       } catch (e) {
+        print('❌ [Auth] Google Sign-In popup error: $e');
         return Left(
           AuthenticationFailure(message: 'Google sign-in failed: $e'),
         );
       }
 
       if (googleUser == null) {
+        print('⚠️ [Auth] Google Sign-In was cancelled by user');
         return const Left(
           AuthenticationFailure(message: 'Google sign-in was cancelled'),
         );
       }
 
+      print('🔐 [Auth] Google user obtained: ${googleUser.email}');
+      print('🔐 [Auth] Fetching Google authentication tokens...');
+      
       final googleAuth = await googleUser.authentication;
+      print('🔐 [Auth] Access token obtained: ${googleAuth.accessToken?.substring(0, 20)}...');
+      print('🔐 [Auth] ID token obtained: ${googleAuth.idToken?.substring(0, 20)}...');
+      
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
+      print('🔐 [Auth] Signing in to Firebase with Google credential...');
+      print('🔐 [Auth] Firebase Auth instance: ${_firebaseAuth.app.name}');
+      print('🔐 [Auth] Firebase project ID: ${_firebaseAuth.app.options.projectId}');
+      print('🔐 [Auth] Firebase API key: ${_firebaseAuth.app.options.apiKey}');
+      
       final userCredential = await _firebaseAuth.signInWithCredential(
         credential,
       );
+      
+      print('✅ [Auth] Firebase signInWithCredential succeeded');
 
       if (userCredential.user == null) {
+        print('❌ [Auth] Firebase returned null user after sign-in');
         return const Left(
           AuthenticationFailure(message: 'Google sign-in failed'),
         );
       }
 
       final firebaseUser = userCredential.user!;
+      print('✅ [Auth] Firebase user obtained: ${firebaseUser.uid}');
+      print('✅ [Auth] User email: ${firebaseUser.email}');
+      print('✅ [Auth] User display name: ${firebaseUser.displayName}');
+      
       final user = UserEntity(
         id: firebaseUser.uid,
         email: firebaseUser.email ?? '',
@@ -200,10 +223,24 @@ class AuthRepositoryImpl implements AuthRepository {
         emailVerified: firebaseUser.emailVerified,
       );
 
+      print('💾 [Auth] Saving user to Firestore...');
       await _saveUserToFirestore(user);
+      print('✅ [Auth] Google Sign-In completed successfully');
+      
       return Right(user);
-    } catch (e) {
-      return Left(AuthenticationFailure(message: e.toString()));
+    } on FirebaseAuthException catch (e) {
+      print('❌ [Auth] FirebaseAuthException during Google Sign-In:');
+      print('   Code: ${e.code}');
+      print('   Message: ${e.message}');
+      print('   Plugin: ${e.plugin}');
+      print('   Stack trace: ${e.stackTrace}');
+      return Left(AuthenticationFailure(message: 'Firebase Auth Error [${e.code}]: ${e.message}'));
+    } catch (e, stackTrace) {
+      print('❌ [Auth] Unexpected error during Google Sign-In:');
+      print('   Error: $e');
+      print('   Type: ${e.runtimeType}');
+      print('   Stack trace: $stackTrace');
+      return Left(AuthenticationFailure(message: 'Sign-in error: $e'));
     }
   }
 
