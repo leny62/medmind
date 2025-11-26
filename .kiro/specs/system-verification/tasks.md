@@ -180,7 +180,7 @@
   - **Property 70: Concurrent events process sequentially**
   - **Validates: Requirements 24.1**
 
-- [ ] 8. Verify UI components and widgets
+- [x] 8. Verify UI components and widgets
   - Test custom button widget rendering and interactions
   - Test custom text field widget with validation
   - Test loading widget display
@@ -189,27 +189,27 @@
   - Test theme application (light/dark)
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 8.1 Write widget test for form validation
+- [x] 8.1 Write widget test for form validation
   - **Property 17: Forms validate before submission**
   - **Validates: Requirements 5.2**
 
-- [ ] 8.2 Write widget test for loading indicators
+- [x] 8.2 Write widget test for loading indicators
   - **Property 18: Loading states display indicators**
   - **Validates: Requirements 5.3**
 
-- [ ] 8.3 Write widget test for error display
+- [x] 8.3 Write widget test for error display
   - **Property 19: Error states display error widgets**
   - **Validates: Requirements 5.4**
 
-- [ ] 8.4 Write widget test for theme changes
+- [x] 8.4 Write widget test for theme changes
   - **Property 20: Theme changes apply globally**
   - **Validates: Requirements 5.5**
 
-- [ ] 8.5 Write widget test for validation error highlighting
+- [x] 8.5 Write widget test for validation error highlighting
   - **Property 37: Validation errors highlight fields**
   - **Validates: Requirements 11.2**
 
-- [ ] 9. Verify form validation across all screens
+- [x] 9. Verify form validation across all screens
   - Test empty required field prevention
   - Test email format validation
   - Test password length validation
@@ -217,47 +217,48 @@
   - Test submit button disabling with errors
   - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5_
 
-- [ ] 9.1 Write property test for empty field validation
+- [x] 9.1 Write property test for empty field validation
   - **Property 54: Empty required fields prevent submission**
   - **Validates: Requirements 19.1**
 
-- [ ] 9.2 Write property test for email validation
+- [x] 9.2 Write property test for email validation
   - **Property 55: Email format is validated**
   - **Validates: Requirements 19.2**
 
-- [ ] 9.3 Write property test for password validation
+- [x] 9.3 Write property test for password validation
   - **Property 56: Password length is enforced**
   - **Validates: Requirements 19.3**
 
-- [ ] 9.4 Write property test for numeric validation
+- [x] 9.4 Write property test for numeric validation
   - **Property 57: Numeric fields validate input**
   - **Validates: Requirements 19.4**
 
-- [ ] 9.5 Write property test for submit button state
+- [x] 9.5 Write property test for submit button state
   - **Property 58: Submit buttons disable with errors**
   - **Validates: Requirements 19.5**
 
-- [ ] 10. Verify Firebase Security Rules
+- [x] 10. Verify Firebase Security Rules
   - Test authenticated users can access their own data
   - Test users cannot access other users' data
   - Test unauthenticated requests are denied
   - Test invalid data is rejected by security rules
   - Test file upload restrictions
+  - Note: Tests skip gracefully without emulators; run with emulators in task 26 for full verification
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 10.1 Write property test for data access authorization
+- [x] 10.1 Write property test for data access authorization
   - **Property 21: Users can only access their own data**
   - **Validates: Requirements 6.1, 6.2**
 
-- [ ] 10.2 Write property test for unauthenticated denial
+- [x] 10.2 Write property test for unauthenticated denial
   - **Property 22: Unauthenticated requests are denied**
   - **Validates: Requirements 6.3**
 
-- [ ] 10.3 Write property test for data validation rules
+- [x] 10.3 Write property test for data validation rules
   - **Property 23: Invalid data is rejected by security rules**
   - **Validates: Requirements 6.4**
 
-- [ ] 11. Verify SharedPreferences integration
+- [x] 11. Verify SharedPreferences integration
   - Test theme preference persistence
   - Test notification settings persistence
   - Test preference loading on app restart
@@ -265,15 +266,15 @@
   - Test preference synchronization across UI
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 11.1 Write property test for preference persistence
+- [x] 11.1 Write property test for preference persistence
   - **Property 28: Preferences persist across sessions**
   - **Validates: Requirements 8.3**
 
-- [ ] 11.2 Write property test for preference UI sync
+- [x] 11.2 Write property test for preference UI sync
   - **Property 29: Preference changes synchronize UI**
   - **Validates: Requirements 8.5**
 
-- [ ] 12. Verify dashboard functionality
+- [x] 12. Verify dashboard functionality
   - Test today's medications display
   - Test adherence statistics accuracy
   - Test immediate updates after dose logging
@@ -281,19 +282,19 @@
   - Test loading indicators
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 12.1 Write property test for dashboard medication display
+- [x] 12.1 Write property test for dashboard medication display
   - **Property 30: Dashboard displays today's medications**
   - **Validates: Requirements 9.1**
 
-- [ ] 12.2 Write property test for dashboard statistics
+- [x] 12.2 Write property test for dashboard statistics
   - **Property 31: Dashboard statistics are accurate**
   - **Validates: Requirements 9.2**
 
-- [ ] 12.3 Write property test for dashboard immediate updates
+- [x] 12.3 Write property test for dashboard immediate updates
   - **Property 32: Dashboard updates immediately after logging**
   - **Validates: Requirements 9.3**
 
-- [ ] 13. Verify navigation and routing
+- [x] 13. Verify navigation and routing
   - Test unauthenticated route protection
   - Test authenticated route access
   - Test navigation stack management
@@ -301,19 +302,19 @@
   - Test logout navigation and stack clearing
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 13.1 Write property test for route protection
+- [x] 13.1 Write property test for route protection
   - **Property 33: Unauthenticated users cannot access protected routes**
   - **Validates: Requirements 10.1**
 
-- [ ] 13.2 Write property test for navigation stack
+- [x] 13.2 Write property test for navigation stack
   - **Property 34: Navigation maintains proper stack**
   - **Validates: Requirements 10.3**
 
-- [ ] 13.3 Write property test for logout navigation
+- [x] 13.3 Write property test for logout navigation
   - **Property 35: Logout clears navigation stack**
   - **Validates: Requirements 10.5**
 
-- [ ] 14. Checkpoint - Ensure all frontend tests pass
+- [x] 14. Checkpoint - Ensure all frontend tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 15. Verify error handling across the application
@@ -536,6 +537,8 @@
   - Verify accessibility with screen readers
   - Check color contrast ratios
   - Test on both iOS and Android
+  - Start Firebase emulators and run security rules tests (task 10)
+  - Verify all security properties pass with real emulators
   - Verify Firebase console data structure
   - Review security rules in Firebase console
   - _Requirements: All requirements - final validation_
