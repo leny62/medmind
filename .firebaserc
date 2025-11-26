@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "medmind-b3a16",
-    "backend/firestore-data-operations": "medmind-b3a16"
+    "default": "medmind-c6af2",
+    "backend/firestore-data-operations": "medmind-c6af2"
   },
   "targets": {},
   "etags": {}
